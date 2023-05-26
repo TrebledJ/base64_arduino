@@ -14,7 +14,7 @@
  *     ascii code of base64 character. If byte is >= 64, then there is not corresponding base64 character
  *     and 255 is returned
  */
-unsigned char binary_to_base64(unsigned char v);
+inline unsigned char binary_to_base64(unsigned char v);
 
 /* base64_to_binary:
  *   Description:
@@ -24,7 +24,7 @@ unsigned char binary_to_base64(unsigned char v);
  *   Returns:
  *     6-bit binary value
  */
-unsigned char base64_to_binary(unsigned char c);
+inline unsigned char base64_to_binary(unsigned char c);
 
 /* encode_base64_length:
  *   Description:
@@ -34,7 +34,7 @@ unsigned char base64_to_binary(unsigned char c);
  *   Returns:
  *     Number of base64 characters needed to encode input_length bytes of binary data
  */
-unsigned int encode_base64_length(unsigned int input_length);
+inline unsigned int encode_base64_length(unsigned int input_length);
 
 /* decode_base64_length:
  *   Description:
@@ -46,8 +46,8 @@ unsigned int encode_base64_length(unsigned int input_length);
  *   Returns:
  *     Number of bytes of binary data in input
  */
-unsigned int decode_base64_length(const unsigned char input[]);
-unsigned int decode_base64_length(const unsigned char input[], unsigned int input_length);
+inline unsigned int decode_base64_length(const unsigned char input[]);
+inline unsigned int decode_base64_length(const unsigned char input[], unsigned int input_length);
 
 /* encode_base64:
  *   Description:
@@ -59,7 +59,7 @@ unsigned int decode_base64_length(const unsigned char input[], unsigned int inpu
  *   Returns:
  *     Length of encoded string in bytes (not including null terminator)
  */
-unsigned int encode_base64(const unsigned char input[], unsigned int input_length, unsigned char output[]);
+static unsigned int encode_base64(const unsigned char input[], unsigned int input_length, unsigned char output[]);
 
 /* decode_base64:
  *   Description:
@@ -71,10 +71,10 @@ unsigned int encode_base64(const unsigned char input[], unsigned int input_lengt
  *   Returns:
  *     Number of bytes in the decoded binary
  */
-unsigned int decode_base64(const unsigned char input[], unsigned char output[]);
-unsigned int decode_base64(const unsigned char input[], unsigned int input_length, unsigned char output[]);
+static unsigned int decode_base64(const unsigned char input[], unsigned char output[]);
+static unsigned int decode_base64(const unsigned char input[], unsigned int input_length, unsigned char output[]);
 
-unsigned char binary_to_base64(unsigned char v) {
+inline unsigned char binary_to_base64(unsigned char v) {
   // Capital letters - 'A' is ascii 65 and base64 0
   if(v < 26) return v + 'A';
   
@@ -103,7 +103,7 @@ unsigned char binary_to_base64(unsigned char v) {
   return 64;
 }
 
-unsigned char base64_to_binary(unsigned char c) {
+inline unsigned char base64_to_binary(unsigned char c) {
   // Capital letters - 'A' is ascii 65 and base64 0
   if('A' <= c && c <= 'Z') return c - 'A';
   
@@ -132,15 +132,15 @@ unsigned char base64_to_binary(unsigned char c) {
   return 255;
 }
 
-unsigned int encode_base64_length(unsigned int input_length) {
+inline unsigned int encode_base64_length(unsigned int input_length) {
   return (input_length + 2)/3*4;
 }
 
-unsigned int decode_base64_length(const unsigned char input[]) {
+inline unsigned int decode_base64_length(const unsigned char input[]) {
   return decode_base64_length(input, -1);
 }
 
-unsigned int decode_base64_length(const unsigned char input[], unsigned int input_length) {
+inline unsigned int decode_base64_length(const unsigned char input[], unsigned int input_length) {
   const unsigned char *start = input;
   
   while(base64_to_binary(input[0]) < 64 && (unsigned int) (input - start) < input_length) {
@@ -151,7 +151,7 @@ unsigned int decode_base64_length(const unsigned char input[], unsigned int inpu
   return input_length/4*3 + (input_length % 4 ? input_length % 4 - 1 : 0);
 }
 
-unsigned int encode_base64(const unsigned char input[], unsigned int input_length, unsigned char output[]) {
+static unsigned int encode_base64(const unsigned char input[], unsigned int input_length, unsigned char output[]) {
   unsigned int full_sets = input_length/3;
   
   // While there are still full sets of 24 bits...
@@ -188,11 +188,11 @@ unsigned int encode_base64(const unsigned char input[], unsigned int input_lengt
   return encode_base64_length(input_length);
 }
 
-unsigned int decode_base64(const unsigned char input[], unsigned char output[]) {
+inline unsigned int decode_base64(const unsigned char input[], unsigned char output[]) {
   return decode_base64(input, -1, output);
 }
 
-unsigned int decode_base64(const unsigned char input[], unsigned int input_length, unsigned char output[]) {
+static unsigned int decode_base64(const unsigned char input[], unsigned int input_length, unsigned char output[]) {
   unsigned int output_length = decode_base64_length(input, input_length);
   
   // While there are still full sets of 24 bits...
